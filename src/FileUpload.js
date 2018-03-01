@@ -35,7 +35,7 @@ class FileUpload extends React.Component {
     }
     
     /*根据props更新组件*/
-    _updateProps(props) {
+    _updateProps = (props) => {
         this.isIE = !(this.checkIE() < 0 || this.checkIE() >= 10)
         const options = props.options
         this.baseUrl = options.baseUrl     //域名
@@ -176,7 +176,7 @@ class FileUpload extends React.Component {
     }
     /*现代浏览器input change事件。File API保存文件*/
     /*触发chooseFile*/
-    commonChange(e) {
+    commonChange = (e) => {
         let files
         e.dataTransfer ? files = e.dataTransfer.files :
           e.target ? files = e.target.files : ''
@@ -195,7 +195,7 @@ class FileUpload extends React.Component {
     }
     
     /*执行上传*/
-    commonUpload() {
+    commonUpload = () => {
         /*mill参数是当前时刻毫秒数，file第一次进行上传时会添加为file的属性，也可在beforeUpload为其添加，之后同一文件的mill不会更改，作为文件的识别id*/
         const mill = (this.files.length && this.files[0].mill) || (new Date).getTime()
         const jud = this.beforeUpload(this.files, mill)
@@ -335,7 +335,7 @@ class FileUpload extends React.Component {
     }
 
     /*组装自定义添加到FormData的对象*/
-    appendFieldsToFormData(formData){
+    appendFieldsToFormData = (formData) => {
         const field = typeof this.paramAddToField == 'function' ? this.paramAddToField() : this.paramAddToField
         field &&
             Object.keys(field).map(index=>
@@ -346,13 +346,13 @@ class FileUpload extends React.Component {
 
     /*iE选择前验证*/
     /*触发beforeChoose*/
-    IEBeforeChoose(e) {
+    IEBeforeChoose = (e) => {
         const jud = this.beforeChoose()
         jud != true && jud != undefined && e.preventDefault()
     }
     /*IE需要用户真实点击上传按钮，所以使用透明按钮*/
     /*触发chooseFile*/
-    IEChooseFile(e) {
+    IEChooseFile = (e) => {
         this.fileName = e.target.value.substring(e.target.value.lastIndexOf('\\') + 1)
         this.chooseFile(this.fileName)
         /*先执行IEUpload，配置好action等参数，然后submit*/
@@ -362,7 +362,7 @@ class FileUpload extends React.Component {
     }
     /*IE处理上传函数*/
     /*触发beforeUpload doUpload*/
-    IEUpload(e) {
+    IEUpload = (e) => {
         const mill = (new Date).getTime()
         const jud = this.beforeUpload(this.fileName, mill)
         if(!this.fileName || (jud != true && jud != undefined) ) {
@@ -433,7 +433,7 @@ class FileUpload extends React.Component {
     }
     /*IE回调函数*/
     //TODO 处理Timeout
-    IECallback(dataType, frameId) {
+    IECallback = (dataType, frameId) => {
         /*回复空闲状态*/
         IEFormGroup[frameId] = true
 
@@ -460,7 +460,7 @@ class FileUpload extends React.Component {
     }
 
     /*外部调用方法，主动触发选择文件（等同于调用btn.click()), 仅支持现代浏览器*/
-    forwardChoose() {
+    forwardChoose = () => {
         if(this.isIE) return false
         this.commonChooseFile()
     }
@@ -477,26 +477,26 @@ class FileUpload extends React.Component {
      *   length : 2
      * }
      */
-    fowardRemoveFile(func) {
+    fowardRemoveFile = (func) => {
         this.files = func(this.files)
     }
 
     /*外部调用方法，传入files（File API）对象可以立刻执行上传动作，IE不支持。调用随后会触发beforeUpload*/
-    filesToUpload(files) {
+    filesToUpload = (files) => {
         if(this.isIE) return
         this.files = files
         this.commonUpload()
     }
 
     /*外部调用方法，取消一个正在进行的xhr，传入id指定xhr（doupload时返回）或者默认取消最近一个。*/
-    abort(id) {
+    abort = (id) => {
         id === undefined ? 
             xhrList[currentXHRID].abort() :
             xhrList[id].abort()
     }
 
     /*判断ie版本*/
-    checkIE() {
+    checkIE = () => {
         const userAgent = this.userAgent;
         const version = userAgent.indexOf('MSIE')
         if (version < 0) return -1
@@ -505,7 +505,7 @@ class FileUpload extends React.Component {
     }
 
     /*生成假的IE上传进度*/
-    fakeProgress() {
+    fakeProgress = () => {
         let add = 6
         const decrease = 0.3,
           end = 98,
@@ -522,7 +522,7 @@ class FileUpload extends React.Component {
         }
     }
 
-    getUserAgent() {
+    getUserAgent = () => {
         const userAgentString = this.props.options && this.props.options.userAgent;
         const navigatorIsAvailable = typeof navigator !== 'undefined';        
         if (!navigatorIsAvailable && !userAgentString) {
@@ -532,7 +532,7 @@ class FileUpload extends React.Component {
     }
 
 
-    componentWillMount() {
+    componentWillMount = () => {
         this.userAgent = this.getUserAgent();
         this.isIE = !(this.checkIE() < 0 || this.checkIE() >= 10)
         /*因为IE每次要用到很多form组，如果在同一页面需要用到多个<FileUpload>可以在options传入tag作为区分。并且不随后续props改变而改变*/
@@ -545,17 +545,17 @@ class FileUpload extends React.Component {
     componentDidMount() {
     }
 
-    componentWillReceiveProps(newProps) {
+    componentWillReceiveProps = (newProps) => {
         this._updateProps(newProps)
     }
 
-    render() {
+    render = () => {
         return this._packRender()
     }
 
 
     /*打包render函数*/
-    _packRender() {
+    _packRender = () => {
         /*IE用iframe表单上传，其他用ajax Formdata*/
         let render = ''
         if (this.isIE) {
@@ -598,7 +598,7 @@ class FileUpload extends React.Component {
 
     /*IE多文件同时上传，需要多个表单+多个form组合。根据currentIEID代表有多少个form。*/
     /*所有不在空闲（正在上传）的上传组都以display:none的形式插入，第一个空闲的上传组会display:block捕捉。*/
-    _multiIEForm() {
+    _multiIEForm = () => {
         const formArr = []
         let hasFree = false
 

@@ -169,7 +169,7 @@ class FileUpload extends React.Component {
 
     /*触发隐藏的input框选择*/
     /*触发beforeChoose*/
-    commonChooseFile() {
+    commonChooseFile = () => {
         const jud = this.beforeChoose()
         if (jud != true && jud != undefined) return
         this.refs['ajax_upload_file_input'].click()

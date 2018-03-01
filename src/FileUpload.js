@@ -20,49 +20,20 @@ const IEFormGroup = [true]
 let xhrList = []
 let currentXHRID = 0
 
-const PT = PropTypes
 
-const FileUpload = React.createClass({
+class FileUpload extends React.Component {
 
-    /*类型验证*/
-    propTypes: {
-        options: PT.shape({
-            /*basics*/
-            baseUrl: PT.string.isRequired,
-            param: PT.oneOfType([PT.object, PT.func]),
-            dataType: PT.string,
-            chooseAndUpload: PT.bool,
-            paramAddToField: PT.oneOfType([PT.object, PT.func]),
-            wrapperDisplay: PT.string,
-            timeout: PT.number,
-            accept: PT.string,
-            multiple: PT.bool,
-            numberLimit: PT.oneOfType([PT.number, PT.func]),
-            fileFieldName: PT.oneOfType([PT.string, PT.func]),
-            withCredentials: PT.bool,
-            requestHeaders: PT.object,
-            /*specials*/
-            tag: PT.string,
-            userAgent: PT.string,
-            disabledIEChoose: PT.oneOfType([PT.bool, PT.func]),
-            _withoutFileUpload: PT.bool,
-            filesToUpload: PT.arrayOf(PT.object),
-            textBeforeFiles: PT.bool,
-            /*funcs*/
-            beforeChoose: PT.func,
-            chooseFile: PT.func,
-            beforeUpload: PT.func,
-            doUpload: PT.func,
-            uploading: PT.func,
-            uploadSuccess: PT.func,
-            uploadError: PT.func,
-            uploadFail: PT.func,
-            onabort: PT.func
-        }).isRequired,
-        style: PT.object,
-        className: PT.string
-    },
-
+    constructor(props, context){
+        super(props, context);
+        this.state = {
+            chooseBtn: {},       //选择按钮。如果chooseAndUpload=true代表选择并上传。
+            uploadBtn: {},       //上传按钮。如果chooseAndUpload=true则无效。
+            before: [],      //存放props.children中位于chooseBtn前的元素
+            middle: [],      //存放props.children中位于chooseBtn后，uploadBtn前的元素
+            after: []        //存放props.children中位于uploadBtn后的元素,
+        };
+    }
+    
     /*根据props更新组件*/
     _updateProps(props) {
         this.isIE = !(this.checkIE() < 0 || this.checkIE() >= 10)
@@ -194,7 +165,7 @@ const FileUpload = React.createClass({
             middle,
             after
         })
-    },
+    }
 
     /*触发隐藏的input框选择*/
     /*触发beforeChoose*/
@@ -202,7 +173,7 @@ const FileUpload = React.createClass({
         const jud = this.beforeChoose()
         if (jud != true && jud != undefined) return
         this.refs['ajax_upload_file_input'].click()
-    },
+    }
     /*现代浏览器input change事件。File API保存文件*/
     /*触发chooseFile*/
     commonChange(e) {
@@ -221,7 +192,7 @@ const FileUpload = React.createClass({
         this.files = files
         this.chooseFile(files)
         this.chooseAndUpload && this.commonUpload()
-    },
+    }
     
     /*执行上传*/
     commonUpload() {
@@ -361,7 +332,7 @@ const FileUpload = React.createClass({
 
         /*清除input的值*/
         this.refs['ajax_upload_file_input'].value = ''
-    },
+    }
 
     /*组装自定义添加到FormData的对象*/
     appendFieldsToFormData(formData){
@@ -371,14 +342,14 @@ const FileUpload = React.createClass({
                 formData.append(index, field[index])
             )
         return formData
-    },
+    }
 
     /*iE选择前验证*/
     /*触发beforeChoose*/
     IEBeforeChoose(e) {
         const jud = this.beforeChoose()
         jud != true && jud != undefined && e.preventDefault()
-    },
+    }
     /*IE需要用户真实点击上传按钮，所以使用透明按钮*/
     /*触发chooseFile*/
     IEChooseFile(e) {
@@ -388,7 +359,7 @@ const FileUpload = React.createClass({
         this.chooseAndUpload && (this.IEUpload() !== false) &&
             document.getElementById(`ajax_upload_file_form_${this.IETag}${currentIEID}`).submit()
         e.target.blur()
-    },
+    }
     /*IE处理上传函数*/
     /*触发beforeUpload doUpload*/
     IEUpload(e) {
@@ -459,7 +430,7 @@ const FileUpload = React.createClass({
         /*置为非空闲*/
         IEFormGroup[currentIEID] = false
 
-    },
+    }
     /*IE回调函数*/
     //TODO 处理Timeout
     IECallback(dataType, frameId) {
@@ -486,13 +457,13 @@ const FileUpload = React.createClass({
             throw e
         }
         return dataType == 'json' ? resp.json : resp.responseText
-    },
+    }
 
     /*外部调用方法，主动触发选择文件（等同于调用btn.click()), 仅支持现代浏览器*/
     forwardChoose() {
         if(this.isIE) return false
         this.commonChooseFile()
-    },
+    }
 
     /**
      * 外部调用方法，当多文件上传时，用这个方法主动删除列表中某个文件
@@ -508,21 +479,21 @@ const FileUpload = React.createClass({
      */
     fowardRemoveFile(func) {
         this.files = func(this.files)
-    },
+    }
 
     /*外部调用方法，传入files（File API）对象可以立刻执行上传动作，IE不支持。调用随后会触发beforeUpload*/
     filesToUpload(files) {
         if(this.isIE) return
         this.files = files
         this.commonUpload()
-    },
+    }
 
     /*外部调用方法，取消一个正在进行的xhr，传入id指定xhr（doupload时返回）或者默认取消最近一个。*/
     abort(id) {
         id === undefined ? 
             xhrList[currentXHRID].abort() :
             xhrList[id].abort()
-    },
+    }
 
     /*判断ie版本*/
     checkIE() {
@@ -531,7 +502,7 @@ const FileUpload = React.createClass({
         if (version < 0) return -1
 
         return parseFloat(userAgent.substring(version + 5, userAgent.indexOf(';', version)))
-    },
+    }
 
     /*生成假的IE上传进度*/
     fakeProgress() {
@@ -549,7 +520,7 @@ const FileUpload = React.createClass({
 
             return start
         }
-    },
+    }
 
     getUserAgent() {
         const userAgentString = this.props.options && this.props.options.userAgent;
@@ -558,17 +529,8 @@ const FileUpload = React.createClass({
             throw new Error('\`options.userAgent\` must be set rendering react-fileuploader in situations when \`navigator\` is not defined in the global namespace. (on the server, for example)');
         }
         return navigatorIsAvailable ? navigator.userAgent : userAgentString;
-    },
+    }
 
-    getInitialState() {
-        return {
-            chooseBtn: {},       //选择按钮。如果chooseAndUpload=true代表选择并上传。
-            uploadBtn: {},       //上传按钮。如果chooseAndUpload=true则无效。
-            before: [],      //存放props.children中位于chooseBtn前的元素
-            middle: [],      //存放props.children中位于chooseBtn后，uploadBtn前的元素
-            after: []        //存放props.children中位于uploadBtn后的元素,
-        }
-    },
 
     componentWillMount() {
         this.userAgent = this.getUserAgent();
@@ -578,18 +540,18 @@ const FileUpload = React.createClass({
         this.IETag = tag ? tag+'_' : ''
 
         this._updateProps(this.props)
-    },
+    }
 
     componentDidMount() {
-    },
+    }
 
     componentWillReceiveProps(newProps) {
         this._updateProps(newProps)
-    },
+    }
 
     render() {
         return this._packRender()
-    },
+    }
 
 
     /*打包render函数*/
@@ -632,7 +594,7 @@ const FileUpload = React.createClass({
             )
         }
         return render
-    },
+    }
 
     /*IE多文件同时上传，需要多个表单+多个form组合。根据currentIEID代表有多少个form。*/
     /*所有不在空闲（正在上传）的上传组都以display:none的形式插入，第一个空闲的上传组会display:block捕捉。*/
@@ -747,6 +709,6 @@ const FileUpload = React.createClass({
         }
     }
 
-})
+}
 
 module.exports = FileUpload

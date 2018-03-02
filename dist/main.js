@@ -119,69 +119,62 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /*根据props更新组件*/
 
 
+	    /*触发隐藏的input框选择*/
+	    /*触发beforeChoose*/
+
+	    /*现代浏览器input change事件。File API保存文件*/
+	    /*触发chooseFile*/
+
+
+	    /*执行上传*/
+
+
+	    /*组装自定义添加到FormData的对象*/
+
+
+	    /*iE选择前验证*/
+	    /*触发beforeChoose*/
+
+	    /*IE需要用户真实点击上传按钮，所以使用透明按钮*/
+	    /*触发chooseFile*/
+
+	    /*IE处理上传函数*/
+	    /*触发beforeUpload doUpload*/
+
+	    /*IE回调函数*/
+	    //TODO 处理Timeout
+
+
+	    /*外部调用方法，主动触发选择文件（等同于调用btn.click()), 仅支持现代浏览器*/
+
+
+	    /**
+	     * 外部调用方法，当多文件上传时，用这个方法主动删除列表中某个文件
+	     * TODO: 此方法应为可以任意操作文件数组
+	     * @param func 用户调用时传入的函数，函数接收参数files（filesAPI 对象）
+	     * @return Obj File API 对象
+	     * File API Obj:
+	     * {
+	     *   0 : file,
+	     *   1 : file,
+	     *   length : 2
+	     * }
+	     */
+
+
+	    /*外部调用方法，传入files（File API）对象可以立刻执行上传动作，IE不支持。调用随后会触发beforeUpload*/
+
+
+	    /*外部调用方法，取消一个正在进行的xhr，传入id指定xhr（doupload时返回）或者默认取消最近一个。*/
+
+
+	    /*判断ie版本*/
+
+
+	    /*生成假的IE上传进度*/
+
+
 	    _createClass(FileUpload, [{
-	        key: 'commonChooseFile',
-
-
-	        /*触发隐藏的input框选择*/
-	        /*触发beforeChoose*/
-	        value: function commonChooseFile() {
-	            var jud = this.beforeChoose();
-	            if (jud != true && jud != undefined) return;
-	            this.refs['ajax_upload_file_input'].click();
-	        }
-	        /*现代浏览器input change事件。File API保存文件*/
-	        /*触发chooseFile*/
-
-
-	        /*执行上传*/
-
-
-	        /*组装自定义添加到FormData的对象*/
-
-
-	        /*iE选择前验证*/
-	        /*触发beforeChoose*/
-
-	        /*IE需要用户真实点击上传按钮，所以使用透明按钮*/
-	        /*触发chooseFile*/
-
-	        /*IE处理上传函数*/
-	        /*触发beforeUpload doUpload*/
-
-	        /*IE回调函数*/
-	        //TODO 处理Timeout
-
-
-	        /*外部调用方法，主动触发选择文件（等同于调用btn.click()), 仅支持现代浏览器*/
-
-
-	        /**
-	         * 外部调用方法，当多文件上传时，用这个方法主动删除列表中某个文件
-	         * TODO: 此方法应为可以任意操作文件数组
-	         * @param func 用户调用时传入的函数，函数接收参数files（filesAPI 对象）
-	         * @return Obj File API 对象
-	         * File API Obj:
-	         * {
-	         *   0 : file,
-	         *   1 : file,
-	         *   length : 2
-	         * }
-	         */
-
-
-	        /*外部调用方法，传入files（File API）对象可以立刻执行上传动作，IE不支持。调用随后会触发beforeUpload*/
-
-
-	        /*外部调用方法，取消一个正在进行的xhr，传入id指定xhr（doupload时返回）或者默认取消最近一个。*/
-
-
-	        /*判断ie版本*/
-
-
-	        /*生成假的IE上传进度*/
-
-	    }, {
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {}
 
@@ -333,6 +326,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	            middle: middle,
 	            after: after
 	        });
+	    };
+
+	    this.commonChooseFile = function () {
+	        var jud = _this2.beforeChoose();
+	        if (jud != true && jud != undefined) return;
+	        _this2.refs['ajax_upload_file_input'].click();
 	    };
 
 	    this.commonChange = function (e) {

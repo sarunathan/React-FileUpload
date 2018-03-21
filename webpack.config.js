@@ -40,7 +40,7 @@ var devBundleConfig = Object.assign({}, sharedConfig, {
 
 var prodBundleConfig = Object.assign({}, sharedConfig, {
     entry: {
-        'main.min': entry 
+        'main': entry 
     },
     plugins: [
         new webpack.optimize.OccurenceOrderPlugin(),        

@@ -36,6 +36,7 @@ class FileUpload extends React.Component {
     
     /*根据props更新组件*/
     _updateProps = (props) => {
+        debugger;
         this.isIE = !(this.checkIE() < 0 || this.checkIE() >= 10)
         const options = props.options
         this.baseUrl = options.baseUrl     //域名
@@ -569,7 +570,7 @@ class FileUpload extends React.Component {
             render = (
                 <div className={this.props.className} style={this.props.style}>
                     {this.state.before}
-                    <div onClick={this.commonChooseFile}
+                    <div onClick={this.commonChooseFile.bind(this)}
                         style={{overflow:'hidden',postion:'relative',display:this.wrapperDisplay}}
                     >
                         {this.state.chooseBtn}
